@@ -1,5 +1,5 @@
 let deckId;
-
+let drawCards;
 
 
 let ourPromise = ()=>{
@@ -17,10 +17,10 @@ let ourPromise = ()=>{
     })
 };
 
-let cardPromise = (deckID)=>{
+let cardPromise = (deckId)=>{
     return new Promise((resolve,reject)=>{
         $.ajax({
-            url: `https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=2`,
+            url: `https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=2`,
             type: "GET",
             success: (response,status)=>{
                 resolve(response);
@@ -34,12 +34,23 @@ let cardPromise = (deckID)=>{
 
 
 async function getCardId() {
-    ourPromise().then((data) => {
-        deckId = data.deck_id;
-    });
-    await cardPromise().then((data) => {
-        document.getElementById('first').innerHTML =  `<img src='${data.image}'>`;
-    })
+    let createDeck =  await ourPromise();
+ 
+    drawCards = await cardPromise(createDeck.deck_id);
+    document.getElementById('first').innerHTML =  `<img src = '${drawCards.cards[0].image}'>`;
+
+    return drawCards;
+
 }
 
-getCardId();
+//
+// let cardId = getCardId();
+//
+// function showCard() {
+//     cardId.then(data => {
+//         document.getElementById('first').innerHTML =  `<img src = '${data.image}'>`;
+//     })
+// }
+
+
+
